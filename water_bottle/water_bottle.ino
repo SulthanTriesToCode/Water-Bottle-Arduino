@@ -56,7 +56,7 @@ void loop() {
     adxl.readAccel(&x, &y, &z);
     float accelerationMagnitude = sqrt(x*x + y*y + z*z);
     if (accelerationMagnitude > 1.0) { // Adjust the threshold as needed
-      totalWater += 0.01; // Increase the number of totalWater in displayMode1 in a drinking motion
+      totalWater += 0.005; // Increase the number of totalWater in displayMode1 in a drinking motion
     }
     delay(200); // debounce delay
   }
