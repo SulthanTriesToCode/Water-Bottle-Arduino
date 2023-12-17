@@ -1,8 +1,10 @@
 #include <LiquidCrystal_I2C.h>
+#include <SparkFun_ADXL345.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // Change the address (0x27) to match your LCD module
 const int buttonPin1 = 8;
 const int buttonPin2 = 7;
+const int buttonPin3 = 6; // Assign buttonPin3 to pin 6
 const int buzzerPin = 9;
 unsigned long lastButtonPress = 0;
 float totalWater = 0.0; // change this to your actual water consumption variable
@@ -13,18 +15,25 @@ bool buzzerOn = false;
 unsigned long lastBuzzerToggle = 0;
 const unsigned long buzzerInterval = 500; // 500 milliseconds
 
+ADXL345 adxl; // Initialize the SparkFun ADXL345 library
+
 void setup() {
   lcd.begin(16, 2);
   lcd.init();
   lcd.backlight();
   pinMode(buttonPin1, INPUT_PULLUP);
   pinMode(buttonPin2, INPUT_PULLUP);
+  pinMode(buttonPin3, INPUT_PULLUP); // Set buttonPin3 as input with internal pull-up resistor
   pinMode(buzzerPin, OUTPUT);
+
+  adxl.powerOn(); // Turn on the ADXL345 accelerometer
 }
 
 void loop() {
   if (digitalRead(buttonPin1) == LOW) {
-    if (displayMode == 2) {
+    if (displayMode == 1) {
+      totalWater = 0.0; // Reset totalWater to 0 in displayMode 1
+    } else if (displayMode == 2) {
       remindTime += 5;
       if (remindTime > 60) remindTime = 0;
     } else {
@@ -39,6 +48,16 @@ void loop() {
 
   if (digitalRead(buttonPin2) == LOW) {
     displayMode = (displayMode + 1) % 3;
+    delay(200); // debounce delay
+  }
+
+  if (digitalRead(buttonPin3) == LOW) {
+    int x, y, z;
+    adxl.readAccel(&x, &y, &z);
+    float accelerationMagnitude = sqrt(x*x + y*y + z*z);
+    if (accelerationMagnitude > 1.0) { // Adjust the threshold as needed
+      totalWater += 0.01; // Increase the number of totalWater in displayMode1 in a drinking motion
+    }
     delay(200); // debounce delay
   }
 
