@@ -1,4 +1,4 @@
-# README for Water Bottle Project
+# Water Bottle Project
 
 This project is a smart water bottle application written in C++ for Arduino. It uses a Liquid Crystal I2C LCD for display and a SparkFun ADXL345 accelerometer for motion detection.
 
