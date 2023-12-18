@@ -1,7 +1,7 @@
-#include <LiquidCrystal_I2C.h>
+#include <LiquidCrystal.h>
 #include <SparkFun_ADXL345.h>
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // Change the address (0x27) to match your LCD module
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // Change the pin numbers to match your LCD module
 const int buttonPin1 = 8;
 const int buttonPin2 = 7;
 const int buttonPin3 = 6; // Assign buttonPin3 to pin 6
@@ -19,8 +19,6 @@ ADXL345 adxl; // Initialize the SparkFun ADXL345 library
 
 void setup() {
   lcd.begin(16, 2);
-  lcd.init();
-  lcd.backlight();
   pinMode(buttonPin1, INPUT_PULLUP);
   pinMode(buttonPin2, INPUT_PULLUP);
   pinMode(buttonPin3, INPUT_PULLUP); // Set buttonPin3 as input with internal pull-up resistor
@@ -56,7 +54,7 @@ void loop() {
     adxl.readAccel(&x, &y, &z);
     float accelerationMagnitude = sqrt(x*x + y*y + z*z);
     if (accelerationMagnitude > 1.0) { // Adjust the threshold as needed
-      totalWater += 0.01; // Increase the number of totalWater in displayMode1 in a drinking motion
+      totalWater += 0.005; // Increase the number of totalWater in displayMode1 in a drinking motion
     }
     delay(200); // debounce delay
   }
